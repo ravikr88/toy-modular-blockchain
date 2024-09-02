@@ -4,19 +4,20 @@ import (
 	"fmt"
 	"strings"
 	b "toychain/block"
+	txn "toychain/transactions"
 )
 
 // A Blockchain is represented by a struct with 2 attributes
 type Blockchain struct {
-	transactionPool []string   // all Txn created on chain, to be mined and added to chain
-	chain           []*b.Block // array of Blocks
+	transactionPool []*txn.Transaction // all Txn created on chain, to be mined and added to chain
+	chain           []*b.Block         // array of Blocks
 }
 
 // NewBlockchain creates a new chain
 func NewBlockchain() *Blockchain {
 	b := &b.Block{}
 
-	// new returns pointer to the created Blockchain
+	// new returns pointer to the crated Blockchain
 	bc := new(Blockchain)
 
 	// Genesis Block for new chain
@@ -36,6 +37,12 @@ func (bc *Blockchain) AddBlock(nonce int, previousHash [32]byte /*string*/) *b.B
 
 	// return the added block
 	return b
+}
+
+// AddTransaction creates a new Txn and appends it to TxnPool
+func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
+	t := txn.NewTransaction(sender, recipient, value)
+	bc.transactionPool = append(bc.transactionPool, t)
 }
 
 // LastBlock returns the latest / Last block added in the chain
