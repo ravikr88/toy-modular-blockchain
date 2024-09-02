@@ -23,19 +23,39 @@ import (
 // }
 
 func main() {
-	/******************************  Nonce  ************************************************/
-	blockChain := blockchain.NewBlockchain()
+	/******************************  Mining  ************************************************/
+	myBlockchainAddress := "my_blockchain_address"
+	blockChain := blockchain.NewBlockchain(myBlockchainAddress)
 	// blockChain.PrintChain()
+
+	blockChain.AddTransaction("A", "B", 1.2)
+	blockChain.Mining()
+	// blockChain.PrintChain()
+
+	blockChain.AddTransaction("C", "D", 2.0)
+	blockChain.AddTransaction("X", "Y", 3.0)
+
+	blockChain.Mining()
+	blockChain.PrintChain()
 
 	blockChain.AddTransaction("A", "B", 1.2)
 	blockChain.AddTransaction("C", "D", 2.4)
 	blockChain.AddTransaction("E", "F", 2.3)
 
-	previousHash := blockChain.LastBlock().Hash()
-	nonce := blockChain.ProofOfWork() // Do POW to get nonce
+	blockChain.PrintTxnPool()
+	/******************************  Nonce  ************************************************/
+	// blockChain := blockchain.NewBlockchain()
+	// // blockChain.PrintChain()
 
-	blockChain.AddBlock(nonce, previousHash)
-	blockChain.PrintChain()
+	// blockChain.AddTransaction("A", "B", 1.2)
+	// blockChain.AddTransaction("C", "D", 2.4)
+	// blockChain.AddTransaction("E", "F", 2.3)
+
+	// previousHash := blockChain.LastBlock().Hash()
+	// nonce := blockChain.ProofOfWork() // Do POW to get nonce
+
+	// blockChain.AddBlock(nonce, previousHash)
+	// blockChain.PrintChain()
 
 	/******************************  Transactions  ******************************************/
 

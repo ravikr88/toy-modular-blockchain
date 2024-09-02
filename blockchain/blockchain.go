@@ -3,17 +3,23 @@ package blockchain
 import (
 	"encoding/hex"
 	"fmt"
+	"log"
 	"strings"
 	b "toychain/block"
 	txn "toychain/transactions"
 )
 
-const MINING_DIFFICULTY = 3
+const (
+	MINING_DIFFICULTY = 3
+	MINING_SENDER     = "THE BLOCKCHAIN"
+	MINING_REWARD     = 1.0
+)
 
 // A Blockchain is represented by a struct with 2 attributes
 type Blockchain struct {
-	transactionPool []*txn.Transaction // all Txn created on chain, to be mined and added to chain
-	chain           []*b.Block         // chain is an array of Blocks
+	transactionPool   []*txn.Transaction // all Txn created on chain, to be mined and added to chain
+	chain             []*b.Block         // chain is an array of Blocks
+	blockchainAddress string
 }
 
 // func (bc *Blockchain) PrintEntireChain() {
@@ -22,12 +28,13 @@ type Blockchain struct {
 // }
 
 // NewBlockchain creates a new chain
-func NewBlockchain() *Blockchain {
+func NewBlockchain(blockchainAddress string) *Blockchain {
 	// empty block
 	b := &b.Block{}
 
 	// new returns pointer to the empty crated Blockchain
 	bc := new(Blockchain)
+	bc.blockchainAddress = blockchainAddress
 
 	// Genesis Block for new chain using empty block's hash
 	bc.AddBlock(0, b.Hash())
@@ -171,4 +178,13 @@ func (bc *Blockchain) ProofOfWork() (nonce int) {
 
 	// Return the nonce that satisfies the proof of work
 	return nonce
+}
+
+func (bc *Blockchain) Mining() bool {
+	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
+	nonce := bc.ProofOfWork()
+	previousHash := bc.LastBlock().Hash()
+	bc.AddBlock(nonce, previousHash)
+	log.Println("action=mining, status=success")
+	return true
 }
